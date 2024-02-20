@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,12 +17,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/support-info", () =>
+app.MapGet("/support-info", ([FromServices] IProvideTheBusinessClock clock) =>
 {
-    return new SupportInfoResponse("Graham", "555-1212");
+
+    if (clock.IsOpen())
+    {
+        return new SupportInfoResponse("Graham", "555-1212");
+    }
+    else
+    {
+        return new SupportInfoResponse("TechSupportPros", "800-STUF-BROKE");
+    }
 });
 
 app.Run();
 
 
 public record SupportInfoResponse(string Name, string Phone);
+
+public interface IProvideTheBusinessClock
+{
+    bool IsOpen();
+}
+public partial class Program { }
