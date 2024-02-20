@@ -27,6 +27,6 @@ public class StandardBusinessClockTests
     [InlineData("2/20/2023 8:59:59")]
     public void WeAreClosed(string dateTime)
     {
-        Assert.Fail("Not Written Yet");
+        Assert.Fail("Not Written Yet"); // fix this
     }
 }
