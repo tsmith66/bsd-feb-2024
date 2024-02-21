@@ -24,6 +24,20 @@ public class IssuesController(IDocumentSession session) : ControllerBase
 
         return Ok(new IssuesResponseCollection(response));
     }
+
+    [HttpGet("/issues/{id:guid}")]
+    public async Task<ActionResult> GetIssueById(Guid id)
+    {
+        var response = await session.Query<IssueResponse>().Where(issue => issue.Id == id).SingleOrDefaultAsync();
+        if (response is null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            return Ok(response);
+        }
+    }
 }
 
 public record IssueRequest(string Software, string Description);
