@@ -1,0 +1,6 @@
+@BusinessClockApi_HostAddress = http://localhost:1337
+
+GET {{BusinessClockApi_HostAddress}}/support-info/
+Accept: application/json
+
+###
