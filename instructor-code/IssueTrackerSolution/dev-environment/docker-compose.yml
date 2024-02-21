@@ -17,7 +17,7 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./db/:/docker-entrypoint-initdb.d/
     ports:
-      - 5439:5432
+      -   :5432
 
   adminer:
     image: adminer
