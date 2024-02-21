@@ -52,7 +52,7 @@ public class GettingSupportInfo
             api.StatusCodeShouldBeOk();
         });
 
-        var expected = new SupportInfoResponse("Graham", "555-1212");
+        var expected = new SupportInfoResponse("Sam", "555-1212");
 
         var actualResponse = response.ReadAsJson<SupportInfoResponse>();
 

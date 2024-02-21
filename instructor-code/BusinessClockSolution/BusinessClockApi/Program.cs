@@ -25,7 +25,7 @@ app.MapGet("/support-info", ([FromServices] IProvideTheBusinessClock clock) =>
 
     if (clock.IsOpen())
     {
-        return new SupportInfoResponse("Graham", "555-1212");
+        return new SupportInfoResponse("Sam", "555-1212");
     }
     else
     {
