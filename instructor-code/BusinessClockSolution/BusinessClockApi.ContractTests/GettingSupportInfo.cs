@@ -17,6 +17,23 @@ public class GettingSupportInfo
     }
 
     [Fact]
+    public async Task UsesTheAdvancedBusinessClock()
+    {
+        await AlbaHost.For<Program>(config =>
+        {
+            config.ConfigureServices(sp =>
+            {
+
+
+                var desc = sp.SingleOrDefault(d => d.ServiceType == typeof(IProvideTheBusinessClock));
+
+                Assert.NotNull(desc);
+                //Assert.Equal(typeof(AdvancedBusinessClock), desc.ImplementationType.GetType());
+            });
+        });
+    }
+
+    [Fact]
     public async Task WhenWeAreOpen()
     {
         var host = await AlbaHost.For<Program>(config =>

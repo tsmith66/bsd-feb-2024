@@ -1,3 +1,4 @@
+using BusinessClockApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args); // Hey, Microsoft, create me a 
@@ -5,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args); // Hey, Microsoft, create me a
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IProvideTheBusinessClock, StandardBusinessClock>();
+builder.Services.AddSingleton<IProvideTheBusinessClock, AdvancedBusinessClock>();
 builder.Services.AddSingleton<ISystemTime, SystemTime>();
 
 // Above this line is "internal" configuration stuff.
