@@ -4,7 +4,3 @@ GET {{BusinessClockApi_HostAddress}}/support-info/
 Accept: application/json
 
 ###
-
-GET {{BusinessClockApi_HostAddress}}/support-info
-
-###

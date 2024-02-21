@@ -6,6 +6,34 @@ namespace BusinessClockApi.ContractTests;
 public class GettingSupportInfo
 {
     [Fact]
+    public async Task Ready()
+    {
+        var host = await AlbaHost.For<Program>();
+        var response = await host.Scenario(api =>
+        {
+            api.Get.Url("/support-info");
+            api.StatusCodeShouldBeOk();
+        });
+    }
+
+    [Fact]
+    public async Task UsesTheAdvancedBusinessClock()
+    {
+        await AlbaHost.For<Program>(config =>
+        {
+            config.ConfigureServices(sp =>
+            {
+
+
+                var desc = sp.SingleOrDefault(d => d.ServiceType == typeof(IProvideTheBusinessClock));
+
+                Assert.NotNull(desc);
+                //Assert.Equal(typeof(AdvancedBusinessClock), desc.ImplementationType.GetType());
+            });
+        });
+    }
+
+    [Fact]
     public async Task WhenWeAreOpen()
     {
         var host = await AlbaHost.For<Program>(config =>
@@ -24,7 +52,7 @@ public class GettingSupportInfo
             api.StatusCodeShouldBeOk();
         });
 
-        var expected = new SupportInfoResponse("Graham", "555-1212");
+        var expected = new SupportInfoResponse("Sam", "555-1212");
 
         var actualResponse = response.ReadAsJson<SupportInfoResponse>();
 

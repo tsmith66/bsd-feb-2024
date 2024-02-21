@@ -1,0 +1,17 @@
+@IssueTrackerApi_HostAddress = http://localhost:1337
+
+GET {{IssueTrackerApi_HostAddress}}/welcome
+Accept: application/json
+
+
+###
+
+
+POST {{IssueTrackerApi_HostAddress}}/issues
+Accept: application/json
+Content-Type: application/json
+
+{
+  "software": "Destiny 2",
+  "description": "I keep getting killed in PVP!"
+}
