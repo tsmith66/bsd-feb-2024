@@ -75,6 +75,7 @@ app.MapGet("/support-info", ([FromServices] IProvideTheBusinessClock clock) =>
     }
 });
 
+app.MapPrometheusScrapingEndpoint();
 app.Run();
 
 

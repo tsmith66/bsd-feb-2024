@@ -1,7 +1,7 @@
 using IssueTrackerApi;
 using IssueTrackerApi.Services;
-using JasperFx.Core;
 using Marten;
+using Npgsql;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -18,6 +18,7 @@ builder.Services.AddOpenTelemetry()
         b.AddZipkinExporter();
         b.AddHttpClientInstrumentation();
         b.AddConsoleExporter();
+        b.AddNpgsql();
         b.SetSampler(new AlwaysOnSampler());
     })
     .WithMetrics(opts =>
@@ -25,6 +26,7 @@ builder.Services.AddOpenTelemetry()
         opts.AddPrometheusExporter();
         opts.AddHttpClientInstrumentation();
         opts.AddRuntimeInstrumentation();
+
         opts.AddAspNetCoreInstrumentation();
     });
 
