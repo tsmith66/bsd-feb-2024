@@ -1,25 +1,42 @@
-﻿using Marten;
+﻿using IssueTrackerApi.Services;
+using Marten;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IssueTrackerApi.Controllers;
 
-public class IssuesController(IDocumentSession session) : ControllerBase
+public class IssuesController(IDocumentSession session, ILogger<IssuesController> logger, BusinessClockHttpService api) : ControllerBase
 {
 
 
     [HttpPost("/issues")]
     public async Task<ActionResult> AddIssueAsync([FromBody] IssueRequest request)
     {
+        logger.LogInformation("Got a request for {software}", request.Software);
         var response = new IssueResponse(Guid.NewGuid(), request.Software,
             request.Description, DateTimeOffset.Now, IssueStatus.Pending);
         session.Insert(response);
         await session.SaveChangesAsync();
-        return Ok(response);
+        var support = await api.GetCurrentSupportInformationAsync();
+
+        var model = new IssueResponseModel()
+        {
+            Id = response.Id,
+            Software = response.Software,
+            Description = response.Description,
+            Logged = response.Logged,
+            Status = response.Status,
+            Support = new SupportResponse(support.Name, support.Phone)
+        };
+
+
+        return Ok(model);
     }
 
     [HttpGet("/issues")]
     public async Task<ActionResult> GetAllIssues()
     {
+
+
         var response = await session.Query<IssueResponse>().ToListAsync();
 
         return Ok(new IssuesResponseCollection(response));
@@ -50,3 +67,14 @@ public record IssueResponse(
 public enum IssueStatus { Pending };
 
 public record IssuesResponseCollection(IReadOnlyList<IssueResponse> Data);
+
+public record IssueResponseSupportInformation(string Message, string Name, string Phone);
+public record IssueResponseModel
+{
+    public Guid Id { get; init; }
+    public string Software { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
+    public DateTimeOffset Logged { get; init; }
+    public IssueStatus Status { get; init; }
+    public SupportResponse? Support { get; init; }
+}

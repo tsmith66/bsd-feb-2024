@@ -1,6 +1,7 @@
+using IssueTrackerApi;
+using IssueTrackerApi.Services;
 using Marten;
 using System.Text.Json.Serialization;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,6 +19,19 @@ var connectionString = builder.Configuration.GetConnectionString("issues")
 
 var apiUrl = builder.Configuration.GetValue<string>("api")
         ?? throw new Exception("No Api Url");
+
+//builder.Services.AddHttpClient(); // Global HTTP Client - used for every request made from this API
+
+// "Named Client" - never have used this.
+//builder.Services.AddHttpClient("google");
+
+// This is a client that is ONLY for the url (apiUrl) This is called a "Typed Client"
+builder.Services.AddHttpClient<BusinessClockHttpService>(client =>
+{
+    client.BaseAddress = new Uri(apiUrl);
+})
+    .AddPolicyHandler(BasicSrePolicies.GetDefaultRetryPolicy())
+    .AddPolicyHandler(BasicSrePolicies.GetDefaultCircuitBreaker());
 
 builder.Services.AddMarten(options =>
 {

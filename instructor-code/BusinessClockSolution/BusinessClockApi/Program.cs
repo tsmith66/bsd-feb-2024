@@ -6,8 +6,28 @@ var builder = WebApplication.CreateBuilder(args); // Hey, Microsoft, create me a
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IProvideTheBusinessClock, AdvancedBusinessClock>();
-builder.Services.AddSingleton<ISystemTime, SystemTime>();
+// Lazy Initialization
+//builder.Services.AddSingleton<IProvideTheBusinessClock, AdvancedBusinessClock>();
+// If you need to initialize this, but still provide it in a "lazy" way.
+//builder.Services.AddSingleton<IProvideTheBusinessClock>(sp =>
+//{
+//    Console.WriteLine("Setting up the business clock");
+//    Thread.Sleep(3000);
+//    // do all the work to create this thing.
+//    var clock = sp.GetRequiredService<ISystemTime>();
+//    Console.WriteLine("Setting up the business clock is done");
+
+//    return new AdvancedBusinessClock(clock);
+//});
+
+Console.WriteLine("Setting up the systemtime");
+
+Thread.Sleep(3000);
+var realClock = new SystemTime();
+Console.WriteLine("Created the Clock");
+
+builder.Services.AddSingleton<ISystemTime>(sp => realClock);
+builder.Services.AddScoped<IProvideTheBusinessClock, AdvancedBusinessClock>();
 
 // Above this line is "internal" configuration stuff.
 var app = builder.Build();
@@ -25,7 +45,7 @@ app.MapGet("/support-info", ([FromServices] IProvideTheBusinessClock clock) =>
 
     if (clock.IsOpen())
     {
-        return new SupportInfoResponse("Sam", "555-1212");
+        return new SupportInfoResponse("Diane", "555-1212");
     }
     else
     {
