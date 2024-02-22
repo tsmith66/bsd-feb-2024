@@ -1,4 +1,5 @@
 ﻿using Alba;
+using BusinessClockApi.Services;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
@@ -17,20 +18,11 @@ public class GettingSupportInfo
     }
 
     [Fact]
-    public async Task UsesTheAdvancedBusinessClock()
+    public async Task HasCorrectServicesRegistered()
     {
-        await AlbaHost.For<Program>(config =>
-        {
-            config.ConfigureServices(sp =>
-            {
-
-
-                var desc = sp.SingleOrDefault(d => d.ServiceType == typeof(IProvideTheBusinessClock));
-
-                Assert.NotNull(desc);
-                //Assert.Equal(typeof(AdvancedBusinessClock), desc.ImplementationType.GetType());
-            });
-        });
+        var host = await AlbaHost.For<Program>();
+        Assert.IsType<AdvancedBusinessClock>(host.Services.GetRequiredService<IProvideTheBusinessClock>());
+        Assert.IsType<SystemTime>(host.Services.GetRequiredService<ISystemTime>());
     }
 
     [Fact]

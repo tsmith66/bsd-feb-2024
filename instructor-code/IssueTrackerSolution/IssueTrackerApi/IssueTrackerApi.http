@@ -12,6 +12,17 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "software": "Destiny 2",
-  "description": "I keep getting killed in PVP!"
+  "software": "Resolve",
+  "description": "My videos stink!!"
 }
+
+
+###
+
+GET {{IssueTrackerApi_HostAddress}}/issues
+Accept: application/json
+
+
+###
+GET {{IssueTrackerApi_HostAddress}}/issues/bfecedb2-36d4-4516-82f7-c844044c9e91
+Accept: application/json
