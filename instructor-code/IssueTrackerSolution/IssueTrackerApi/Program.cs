@@ -1,10 +1,32 @@
 using IssueTrackerApi;
 using IssueTrackerApi.Services;
+using JasperFx.Core;
 using Marten;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(b => b.AddService("issues-api"))
+    .WithTracing(b =>
+    {
+        b.AddAspNetCoreInstrumentation();
+        b.AddHttpClientInstrumentation();
+        b.AddZipkinExporter();
+        b.AddHttpClientInstrumentation();
+        b.AddConsoleExporter();
+        b.SetSampler(new AlwaysOnSampler());
+    })
+    .WithMetrics(opts =>
+    {
+        opts.AddPrometheusExporter();
+        opts.AddHttpClientInstrumentation();
+        opts.AddRuntimeInstrumentation();
+        opts.AddAspNetCoreInstrumentation();
+    });
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -53,5 +75,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseHealthChecks("/healthz");
-
+app.MapPrometheusScrapingEndpoint();
 app.Run();
