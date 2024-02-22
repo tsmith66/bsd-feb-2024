@@ -13,6 +13,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
 
 var connectionString = builder.Configuration.GetConnectionString("issues")
         ?? throw new Exception("No Connection String for Issues");
@@ -51,6 +52,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseHealthChecks("/healthz");
 
 app.Run();
